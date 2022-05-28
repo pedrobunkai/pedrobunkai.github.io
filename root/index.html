@@ -1,25 +1,45 @@
 <video id="video" width="320" height="240" autoplay></video>
+  
+<canvas id="canvas">
 
 <script>
-
-  const req = new XMLHttpRequest();
-  req.open('GET', document.location, false);
-  req.send(null);
-  const headers = req.getAllResponseHeaders().toLowerCase();
-
-
   let video = document.querySelector("#video");
+  const canvas = document.getElementById('canvas');
+
+  const videoConfig = {
+    'audio': false,
+    'video': {
+      facingMode: 'user',
+      facingMode: 'environment',
+      width: 360,
+      height: 270,
+    }
+  };
+
+  let streaming = false;
 
   const getCamera = async function() {
-    let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    let stream = await navigator.mediaDevices.getUserMedia(videoConfig);
     video.srcObject = stream;
-    console.log('headers:', headers)
+    
     await new Promise((resolve) => {
       video.onloadedmetadata = () => {
         console.log('got metadata')
         resolve(video);
       };
     })
+
+    video.addEventListener('canplay', function(ev){
+      if (!streaming) {
+        height = video.videoHeight / (video.videoWidth/width);
+
+        video.setAttribute('width', width);
+        video.setAttribute('height', height);
+        canvas.setAttribute('width', width);
+        canvas.setAttribute('height', height);
+        streaming = true;
+      }
+    }, false);
 
     console.log('will play video')
     try {
