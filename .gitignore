@@ -1,0 +1,7 @@
+node_modules
+.try
+.yar-error.log
+.env
+.vscode
+.vercel
+dist/
