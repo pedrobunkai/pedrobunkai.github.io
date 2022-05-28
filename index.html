@@ -1,0 +1,39 @@
+<video id="video" width="320" height="240" autoplay></video>
+
+<script>
+
+  const req = new XMLHttpRequest();
+  req.open('GET', document.location, false);
+  req.send(null);
+  const headers = req.getAllResponseHeaders().toLowerCase();
+
+
+  let video = document.querySelector("#video");
+
+  const getCamera = async function() {
+    let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    video.srcObject = stream;
+    console.log('headers:', headers)
+    await new Promise((resolve) => {
+      video.onloadedmetadata = () => {
+        console.log('got metadata')
+        resolve(video);
+      };
+    })
+
+    console.log('will play video')
+    try {
+      console.log("inside try")
+      await video.play();
+      console.log('after await')
+    } catch (e) {
+      console.log(e)
+    }
+
+    console.log('video started')
+  };
+
+  getCamera()
+
+
+</script>
